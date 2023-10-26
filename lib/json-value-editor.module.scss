@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+
+.code {
+  background-color: #f7fafb;
+  display: block;
+  padding: 0px 8px 0px 52px;
+  font-family: "Source Code Pro", monospace !important;
+  line-height: 1.6;
+  font-size: 14px;
+  tab-size: 2;
+  overflow-x: auto;
+  position: relative;
+  white-space: pre-wrap;
+  word-break: break-word;
+  cursor: default;
+  &::before {
+    content: attr(data-gutter);
+    color: #999;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #d9dddf;
+    padding: 0 8px;
+    min-width: 24px;
+    height: 100%;
+    text-align: right;
+  }
+}
+.span {
+  cursor: pointer;
+}
+.input {
+  color: rgba(47, 81, 161, 1);
+  display: inline-block;
+  width: auto;
+  font-family: "Source Code Pro", monospace;
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-decoration-style: wavy;
+  text-decoration-color: #e51c00;
+  &:focus {
+    outline: none;
+  }
+}
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+.symbol {
+  color: rgba(0, 0, 0, 1);
+}
+.key {
+  color: rgba(220, 34, 33, 1);
+}
+.type-string {
+  color: rgb(43, 43, 43);
+}
+.type-number {
+  color: rgba(77, 134, 93, 1);
+}
+.type-boolean {
+  color: rgba(56, 60, 252, 1);
+}
