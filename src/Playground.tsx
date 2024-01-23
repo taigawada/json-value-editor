@@ -50,7 +50,9 @@ function App() {
         <JsonValueEditor
           object={json}
           onChange={handleJsonChange}
-          nullFallback={""}
+          nullFallback={null}
+          changeType={false}
+          convertTextToNumber={false}
         ></JsonValueEditor>
       </div>
       <div className="w-full max-w-3xl mx-auto my-4">
