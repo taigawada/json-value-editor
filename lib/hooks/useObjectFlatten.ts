@@ -11,10 +11,14 @@ export interface FlattenObject {
   [key: string]: {
     __value: JsonValues;
     __type: "string" | "number" | "boolean" | "null";
+    __editable: boolean;
   };
 }
 
-export const useObjectFlatten = <T extends NestedObject>(object: T) => {
+export const useObjectFlatten = <T extends NestedObject>(
+  object: T,
+  nullFallback: JsonValues
+) => {
   const initialValue = useRef<FlattenObject | null>(null);
   const detectType = (value: unknown) => {
     if (value === null) return "null";
@@ -23,25 +27,36 @@ export const useObjectFlatten = <T extends NestedObject>(object: T) => {
     if (typeof value === "boolean") return "boolean";
     throw Error("Unexpected Type");
   };
-  const flat = useCallback((object: T): FlattenObject => {
-    const result: FlattenObject = {};
-    const f = (key: string, value: unknown) => {
-      if (isObject(value)) {
-        Object.entries(value).forEach(([k, v]) => {
-          if (k.includes(".")) {
-            throw new Error("The property cannot contain a dot.");
+  const flat = useCallback(
+    (object: T): FlattenObject => {
+      const result: FlattenObject = {};
+      const f = (key: string, value: unknown) => {
+        if (isObject(value)) {
+          Object.entries(value).forEach(([k, v]) => {
+            if (k.includes(".")) {
+              throw new Error("The property cannot contain a dot.");
+            }
+            f(`${key}${"."}${k}`, v);
+          });
+        } else {
+          let editable = true;
+          if (value === null && nullFallback === null) {
+            editable = false;
           }
-          f(`${key}${"."}${k}`, v);
-        });
-      } else {
-        Object.assign(result, {
-          [key]: { __value: value, __type: detectType(value) },
-        });
-      }
-    };
-    Object.entries(object).forEach(([key, value]) => f(key, value));
-    return result;
-  }, []);
+          Object.assign(result, {
+            [key]: {
+              __value: value,
+              __type: detectType(value),
+              __editable: editable,
+            },
+          });
+        }
+      };
+      Object.entries(object).forEach(([key, value]) => f(key, value));
+      return result;
+    },
+    [nullFallback]
+  );
   const flattenObject: FlattenObject = flat(object);
   if (!initialValue.current) {
     initialValue.current = flattenObject;
