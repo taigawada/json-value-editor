@@ -6,8 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
+
 import { Tooltip } from "react-tooltip";
 import { useKey } from "react-use";
+import * as Tooltip from "@radix-ui/react-tooltip";
+
 import styles from "./json-value-editor.module.scss";
 
 import { useOutsideClick, useObjectFlatten } from "./hooks/index.js";
@@ -159,7 +162,11 @@ export function JsonValueEditor<T extends NestedObject>({
   const handleEdit = useCallback(
     (key: string, value: JsonValues) => {
       if (value === null) {
-        if (nullFallback !== null) {
+        if (nullFallback !== null && initialValue.current) {
+          initialValue.current[key] = {
+            __value: nullFallback,
+            __type: detectType(nullFallback),
+          };
           const clone = { ...flattenObject };
           clone[key] = { ...clone[key], __value: nullFallback };
           const s = structured(clone);
@@ -170,7 +177,14 @@ export function JsonValueEditor<T extends NestedObject>({
         setCurrentEdit(key);
       }
     },
-    [flattenObject, nullFallback, onChange, structured]
+    [
+      detectType,
+      flattenObject,
+      initialValue,
+      nullFallback,
+      onChange,
+      structured,
+    ]
   );
   const keyValueMarkup = (
     key: string,
@@ -250,6 +264,25 @@ export function JsonValueEditor<T extends NestedObject>({
             autoCapitalize={"off"}
             onChange={(e) => handleChange(key, e.target.value)}
           ></input>
+          <Tooltip.Trigger asChild>
+            <input
+              data-tooltip-id={key}
+              ref={(ref) => (inputRef.current = ref)}
+              value={
+                flattenObject[key].__type !== "null"
+                  ? flattenObject[key].__value!.toString()
+                  : "null"
+              }
+              className={`${styles.input}`}
+              style={{
+                textDecoration: typeErrors?.key === key ? "underline" : "none",
+              }}
+              type={"text"}
+              autoComplete={"off"}
+              autoCapitalize={"off"}
+              onChange={(e) => handleChange(key, e.target.value)}
+            ></input>
+          </Tooltip.Trigger>
         )}
         {flattenObject[key].__type === "string" && (
           <span
@@ -265,25 +298,22 @@ export function JsonValueEditor<T extends NestedObject>({
     );
   };
   return (
-    <div>
-      <code className={styles.code} data-gutter={dataGutter}>
-        <span className={styles.symbol}>{"{"}</span>
-        <br></br>
-        {Object.entries(object).map(([k, v]) => keyValueMarkup(k, v, 1))}
-        <span className={styles.symbol}>{"}"}</span>
-        <Tooltip
-          id={typeErrors?.key}
-          content={
-            errorMessage
-              ? errorMessage(typeErrors?.expectedType, typeErrors?.currentType)
-              : `Expected ${typeErrors?.expectedType}, but the value is ${typeErrors?.currentType}.`
-          }
-          noArrow
-          variant={"light"}
-          place={"bottom"}
-          offset={10}
-        />
-      </code>
-    </div>
+    <Tooltip.Provider>
+      <Tooltip.Root delayDuration={100} disableHoverableContent>
+        <code className={styles.code} data-gutter={dataGutter}>
+          <span className={styles.symbol}>{"{"}</span>
+          <br></br>
+          {Object.entries(object).map(([k, v]) => keyValueMarkup(k, v, 1))}
+          <span className={styles.symbol}>{"}"}</span>
+        </code>
+        {typeErrors && (
+          <Tooltip.Content className={styles.TooltipContent} side={"bottom"}>
+            {errorMessage
+              ? errorMessage(typeErrors.expectedType, typeErrors.currentType)
+              : `Expected ${typeErrors.expectedType}, but the value is ${typeErrors.currentType}.`}
+          </Tooltip.Content>
+        )}
+      </Tooltip.Root>
+    </Tooltip.Provider>
   );
 }

@@ -1,6 +1,6 @@
 {
   "name": "@taigawada/json-value-editor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "dist/json-value-editor.js",
   "types": "dist/index.d.ts",
@@ -37,8 +37,7 @@
   "peerDependencies": {
     "lodash": "^4.17.21",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-tooltip": "^5.21.5"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.200",
