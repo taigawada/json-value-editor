@@ -1,17 +1,17 @@
 {
   "name": "@taigawada/json-value-editor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
-  "main": "dist/json-value-editor.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/json-value-editor.js",
-      "require": "./dist/json-value-editor.cjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./style.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
+      "import": "./dist/assets/style.css",
+      "require": "./dist/assets/style.css"
     }
   },
   "sideEffects": [
