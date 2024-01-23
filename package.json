@@ -2,16 +2,16 @@
   "name": "@taigawada/json-value-editor",
   "version": "0.1.0",
   "type": "module",
-  "main": "dist/json-value-editor.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/json-value-editor.js",
-      "require": "./dist/json-value-editor.cjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./style.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
+      "import": "./dist/assets/style.css",
+      "require": "./dist/assets/style.css"
     }
   },
   "sideEffects": [
@@ -63,6 +63,7 @@
     "vite-plugin-lib-inject-css": "^1.3.0"
   },
   "dependencies": {
+    "react-tooltip": "^5.26.0"
     "react-use": "^17.5.0"
   }
 }
