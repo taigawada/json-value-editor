@@ -6,7 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
+
+import { Tooltip } from "react-tooltip";
+import { useKey } from "react-use";
 import * as Tooltip from "@radix-ui/react-tooltip";
+
 import styles from "./json-value-editor.module.scss";
 
 import { useOutsideClick, useObjectFlatten } from "./hooks/index.js";
@@ -51,7 +55,7 @@ export function JsonValueEditor<T extends NestedObject>({
     .join("\n ");
   const [typeErrors, setTypeErrors] = useState<TypeError | null>(null);
   const { flattenObject, initialValue, structured, detectType } =
-    useObjectFlatten<T>(object);
+    useObjectFlatten<T>(object, nullFallback);
 
   interface SpanRefs {
     [key: string]: {
@@ -75,6 +79,40 @@ export function JsonValueEditor<T extends NestedObject>({
     }
     setCurrentEdit(null);
   }, [flattenObject, initialValue, onChange, structured, typeErrors]);
+  useKey("Tab", (event) => {
+    if (document !== undefined) {
+      event.preventDefault();
+      if (inputRef.current === document.activeElement) {
+        const keys = Object.keys(flattenObject);
+        const editableKeys = keys.filter(
+          (key) => flattenObject[key].__editable
+        );
+        const currentIndex = editableKeys.findIndex(
+          (key) => key === inputRef.current?.id
+        );
+        if (currentIndex !== -1) {
+          if (currentIndex !== editableKeys.length - 1) {
+            setCurrentEdit(editableKeys[currentIndex + 1]);
+            console.log(flattenObject[editableKeys[currentIndex + 1]].__value);
+            if (
+              flattenObject[editableKeys[currentIndex + 1]].__value === null
+            ) {
+              handleEdit(editableKeys[currentIndex + 1], null);
+            }
+          } else {
+            setCurrentEdit(editableKeys[0]);
+          }
+        }
+      }
+    }
+  });
+  useKey("Enter", () => {
+    if (document !== undefined) {
+      if (inputRef.current === document.activeElement) {
+        setCurrentEdit(null);
+      }
+    }
+  });
   useOutsideClick(inputRef, handleOutsideClick);
   useEffect(() => {
     if (currentEdit) {
@@ -208,6 +246,24 @@ export function JsonValueEditor<T extends NestedObject>({
             : "null"}
         </span>
         {currentEdit === key && (
+          <input
+            data-tooltip-id={key}
+            id={key}
+            ref={(ref) => (inputRef.current = ref)}
+            value={
+              flattenObject[key].__type !== "null"
+                ? flattenObject[key].__value!.toString()
+                : "null"
+            }
+            className={`${styles.input}`}
+            style={{
+              textDecoration: typeErrors?.key === key ? "underline" : "none",
+            }}
+            type={"text"}
+            autoComplete={"off"}
+            autoCapitalize={"off"}
+            onChange={(e) => handleChange(key, e.target.value)}
+          ></input>
           <Tooltip.Trigger asChild>
             <input
               data-tooltip-id={key}
