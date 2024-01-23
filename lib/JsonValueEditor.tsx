@@ -9,6 +9,8 @@ import {
 
 import { Tooltip } from "react-tooltip";
 import { useKey } from "react-use";
+import * as Tooltip from "@radix-ui/react-tooltip";
+
 import styles from "./json-value-editor.module.scss";
 
 import { useOutsideClick, useObjectFlatten } from "./hooks/index.js";
