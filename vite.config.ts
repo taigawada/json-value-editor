@@ -11,13 +11,12 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "lib/index.ts"),
       formats: ["es", "cjs"],
+      name: "json-value-editor",
+      fileName: (format) => (format === "cjs" ? "index.cjs" : "index.mjs"),
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime"],
-      output: {
-        assetFileNames: "assets/[name][extname]",
-        entryFileNames: "[name].js",
-      },
     },
+    sourcemap: true,
   },
 });
