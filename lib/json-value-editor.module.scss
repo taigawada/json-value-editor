@@ -26,9 +26,6 @@
     text-align: right;
   }
 }
-.span {
-  cursor: pointer;
-}
 .input {
   color: rgba(47, 81, 161, 1);
   display: inline-block;
@@ -49,6 +46,12 @@
   &:focus {
     outline: none;
   }
+}
+.cursor-editable {
+  cursor: text;
+}
+.cursor-uneditable {
+  cursor: not-allowed;
 }
 .symbol {
   color: rgba(0, 0, 0, 1);

@@ -212,8 +212,13 @@ export function JsonValueEditor<T extends NestedObject>({
           </span>
         )}
         <span
-          className={`${styles.symbol} ${
-            styles[`type-${flattenObject[key].__type}`]
+          className={`
+          ${styles.symbol} 
+          ${styles[`type-${flattenObject[key].__type}`]}
+          ${
+            flattenObject[key].__editable
+              ? styles["cursor-editable"]
+              : styles["cursor-uneditable"]
           }`}
           style={{
             position: currentEdit === key ? "absolute" : "relative",
