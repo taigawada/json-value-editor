@@ -16,6 +16,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime"],
+      output: {
+        assetFileNames: "assets/[name][extname]",
+      },
     },
     sourcemap: true,
   },
